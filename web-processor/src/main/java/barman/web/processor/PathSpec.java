@@ -1,5 +1,7 @@
 package barman.web.processor;
 
+import barman.user;
+
 import javax.lang.model.element.ExecutableElement;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,14 +150,39 @@ final class PathSpec {
 
   public Route makeRoute(
       final HttpVerb verb,
-      final ExecutableElement method,
-      final String[] roles)
+      final ExecutableElement method)
   {
     final var handler = method.getSimpleName().toString();
-    if (isStatic()) {
-      return new Route(path, verb, pattern, roles, handler);
+
+    var spec = method.getAnnotation(barman.user.class);
+    if (spec == null) {
+      spec = method.getEnclosingElement().getAnnotation(barman.user.class);
+    }
+
+    final boolean requiresUserLogged;
+    final boolean requiresUserNotLogged;
+    final String[] allowedRoles;
+    final String[] rejectedRoles;
+    if (spec == null) {
+      requiresUserLogged = false;
+      requiresUserNotLogged = false;
+      allowedRoles = Route.NO_ROLES;
+      rejectedRoles = Route.NO_ROLES;
     } else {
-      return new Route(path, verb, pattern, regex, roles, handler, parameters);
+      allowedRoles = spec.allowedRoles();
+      rejectedRoles = spec.rejectedRoles();
+      requiresUserLogged = allowedRoles.length > 0;
+      requiresUserNotLogged = rejectedRoles.length == 1 && "*".equals(rejectedRoles[0]);
+
+      if (requiresUserLogged && requiresUserNotLogged) {
+        throw new IllegalStateException("or user is required to be logged or to be not logged, but not both!");
+      }
+    }
+
+    if (isStatic()) {
+      return new Route(path, verb, pattern, requiresUserLogged, requiresUserNotLogged, allowedRoles, rejectedRoles, handler);
+    } else {
+      return new Route(path, verb, pattern, regex, requiresUserLogged, requiresUserNotLogged, allowedRoles, rejectedRoles, handler, parameters);
     }
   }
 }

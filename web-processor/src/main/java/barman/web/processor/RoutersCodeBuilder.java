@@ -39,6 +39,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 class RoutersCodeBuilder {
@@ -136,19 +137,35 @@ class RoutersCodeBuilder {
   MethodSpec overrideVerbHandler(
       final HttpVerb httpVerb,
       final List<Route> routes,
-      boolean isDevelopmentEnvironment)
+      final boolean isDevelopmentEnvironment)
   {
-    final var httpVerbHandler = MethodSpec
-                                    .methodBuilder(httpVerb.handler)
-                                    .addAnnotation(Override.class)
-                                    .addModifiers(Modifier.PUBLIC)
-                                    .addParameter(HttpServletRequest.class, "request", Modifier.FINAL)
-                                    .addParameter(HttpServletResponse.class, "response", Modifier.FINAL)
-                                    .addException(ServletException.class)
-                                    .addException(IOException.class);
+    final var httpVerbHandler = MethodSpec.methodBuilder(httpVerb.handler)
+                                          .addAnnotation(Override.class)
+                                          .addModifiers(Modifier.PUBLIC)
+                                          .addParameter(HttpServletRequest.class, "request", Modifier.FINAL)
+                                          .addParameter(HttpServletResponse.class, "response", Modifier.FINAL)
+                                          .addException(ServletException.class)
+                                          .addException(IOException.class);
+    final var userLoggedChecked = doAllRoutesRequireUserLogged(routes);
+    if (userLoggedChecked) {
+      addUserLoggedValidation(httpVerbHandler);
+    }
+    final var userNotLoggedChecked = doAllRoutesRequireUserNotLogged(routes);
+    if (userNotLoggedChecked) {
+      addUserNotLoggedValidation(httpVerbHandler);
+    }
+    final var allowedRolesChecked = doAllRoutesHasSameAllowedRoles(routes);
+    if (allowedRolesChecked) {
+      addAllowedRolesValidation(httpVerbHandler, routes.get(0));
+    }
+    final var rejectedRolesChecked = doAllRoutesHasSameRejectedRoles(routes);
+    if (rejectedRolesChecked) {
+      addRejectedRolesValidation(httpVerbHandler, routes.get(0));
+    }
+
     for (final var route : routes) {
       final var ifMatchesRoute = route.makeMatcher(httpVerbHandler);
-      addHandle(ifMatchesRoute, route);
+      addHandle(ifMatchesRoute, route, userLoggedChecked, userNotLoggedChecked, allowedRolesChecked, rejectedRolesChecked);
       httpVerbHandler.endControlFlow();
     }
 
@@ -159,64 +176,126 @@ class RoutersCodeBuilder {
     return httpVerbHandler.build();
   }
 
-  boolean hasDynamicRoutes(final Iterable<Route> routes)
-  {
+  private boolean doAllRoutesRequireUserLogged(final List<Route> routes) {
     for (final Route r : routes) {
-      if (r.isParameterized()) {
-        return true;
-      }
+      if (!r.requiresUserLogged) { return false; }
     }
-    return false;
+    return true;
   }
 
-  private String paramsInit(final Iterable<Route> routes)
-  {
-    final int maxParametersCount = maxParametersCountAt(routes);
-    switch (maxParametersCount) {
-    case 1:
-      return "null";
-    case 2:
-      return "null, null";
-    case 3:
-      return "null, null, null";
-    case 4:
-      return "null, null, null, null";
-    default: {
-      final int capacity = 4 * maxParametersCount + 2 * (maxParametersCount - 1);
-      final var params = new StringBuilder(capacity).append("null, null, null, null");
-      for (int i = 4; i < maxParametersCount; i++) {
-        params.append(", null");
-      }
-      return params.toString();
+  private boolean doAllRoutesRequireUserNotLogged(final List<Route> routes) {
+    for (final Route r : routes) {
+      if (!r.requiresUserNotLogged) { return false; }
     }
-    }
+    return true;
   }
 
-  private int maxParametersCountAt(final Iterable<Route> routes)
-  {
-    int maxParametersCount = 0;
-    for (final Route r : routes) {
-      if (r.isParameterized()) {
-        if (r.parametersCount() > maxParametersCount) {
-          maxParametersCount = r.parametersCount();
-        }
-      }
+  private boolean doAllRoutesHasSameAllowedRoles(final List<Route> routes) {
+    if (routes.size() < 2) { return true; }
+
+    final var roles = routes.get(0).allowedRoles;
+    for (int i = 1; i < routes.size(); i++) {
+      if (!Arrays.equals(roles, routes.get(i).allowedRoles)) { return false; }
     }
-    return maxParametersCount;
+    return true;
+  }
+
+  private boolean doAllRoutesHasSameRejectedRoles(final List<Route> routes) {
+    if (routes.size() < 2) { return true; }
+
+    final var roles = routes.get(0).rejectedRoles;
+    for (int i = 1; i < routes.size(); i++) {
+      if (!Arrays.equals(roles, routes.get(i).rejectedRoles)) { return false; }
+    }
+    return true;
   }
 
   void addHandle(
       final MethodSpec.Builder control,
+      final Route route,
+      final boolean userLoggedChecked,
+      final boolean userNotLoggedChecked,
+      final boolean allowedRolesChecked,
+      final boolean rejectedRolesChecked)
+  {
+    if (!userLoggedChecked && route.requiresUserLogged) {
+      addUserLoggedValidation(control);
+    }
+    if (!userNotLoggedChecked && route.requiresUserNotLogged) {
+      addUserNotLoggedValidation(control);
+    }
+    if (!allowedRolesChecked) {
+      addAllowedRolesValidation(control, route);
+    }
+    if (!rejectedRolesChecked) {
+      addRejectedRolesValidation(control, route);
+    }
+    control.addStatement("$L(request, response)", route.handler);
+    control.addStatement("return");
+  }
+
+  private void addUserLoggedValidation(final MethodSpec.Builder httpVerbHandler) {
+    httpVerbHandler.beginControlFlow("if (!userLogged())")
+                   .addStatement("notAuthorized(response)")
+                   .addStatement("return")
+                   .endControlFlow();
+  }
+
+  private void addUserNotLoggedValidation(final MethodSpec.Builder control) {
+    control.beginControlFlow("if (userLogged())")
+           .addStatement("notAuthorized(response)")
+           .addStatement("return")
+           .endControlFlow();
+  }
+
+  private void addAllowedRolesValidation(
+      final MethodSpec.Builder control,
       final Route route)
   {
-    if (route.hasRoleConstrains()) {
-      control.beginControlFlow("if (!" + route.rolesExpr() + ')', (Object[]) route.roles)
+    if (route.hasOneAllowedRole()) {
+      final var role = route.allowedRole();
+      if (!"*".equals(role)) {
+        control.beginControlFlow("if (!$S.equals(getCurrentUser().role()))", role)
+               .addStatement("notAuthorized(response)")
+               .addStatement("return")
+               .endControlFlow();
+      }
+    } else if (route.hasManyAllowedRole()) {
+      control.beginControlFlow("switch (getCurrentUser().role())");
+      for (final var allowedRole : route.allowedRoles) {
+        control.addCode("case $S:\n", allowedRole);
+      }
+      control.addStatement("break");
+      control.addCode("default:\n")
              .addStatement("notAuthorized(response)")
              .addStatement("return")
              .endControlFlow();
     }
-    control.addStatement("$L(request, response)", route.handler);
-    control.addStatement("return");
+  }
+
+  private void addRejectedRolesValidation(
+      final MethodSpec.Builder control,
+      final Route route)
+  {
+    if (route.hasOneRejectedRole()) {
+      final var role = route.rejectedRole();
+      if (!"*".equals(role)) {
+        control.beginControlFlow("if (!$S.equals(getCurrentUser().role()))", route.rejectedRole())
+               .addStatement("notAuthorized(response)")
+               .addStatement("return")
+               .endControlFlow();
+      }
+    } else if (route.hasManyRejectedRole()) {
+      control.beginControlFlow("switch (getCurrentUser().role())");
+      for (final var rejectedRole : route.rejectedRoles) {
+        control.addCode("case $S:\n", rejectedRole);
+      }
+      control.addStatement("break");
+      control.addCode("default:\n")
+             .addStatement("notAuthorized(response)")
+             .addStatement("return")
+             .endControlFlow();
+    }
   }
 
   private boolean no(final List<Route> routes) {

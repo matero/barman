@@ -91,48 +91,31 @@ class RoutesReader {
     if (path == null) {
       return;
     }
+    final var handler = handlerPath(method, path);
     makeRoute(
         httpVerb,
-        getUri(baseUri, method, path),
-        handlerPath(method, path),
-        getRoles(method, endpoint),
+        getUri(baseUri, handler),
+        handler,
         method);
   }
 
   private String getUri(
       final String baseUri,
-      final ExecutableElement method,
-      final String path)
+      final String handler)
   {
-    return makeUri(baseUri, handlerPath(method, path));
+    return makeUri(baseUri, handler);
   }
 
   boolean isAdmin(final TypeElement endpoint) { return endpoint.getAnnotation(barman.endpoint.class).admin(); }
-
-  String[] getRoles(
-      final ExecutableElement method,
-      final TypeElement endpoint)
-  {
-    var roles = method.getAnnotation(barman.roles.class);
-    if (roles == null) {
-      roles = endpoint.getAnnotation(barman.roles.class);
-    }
-    if (roles == null) {
-      return NO_ROLES;
-    } else {
-      return roles.value();
-    }
-  }
 
   private void makeRoute(
       final HttpVerb verb,
       final String endPointUri,
       final String handlerUri,
-      final String[] roles,
       final ExecutableElement method)
   {
     final var path = PathSpec.from(endPointUri, handlerUri);
-    routes.addRoute(path.makeRoute(verb, method, roles));
+    routes.addRoute(path.makeRoute(verb, method));
   }
 
   private void error(

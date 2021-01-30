@@ -268,65 +268,7 @@ public abstract class EndPointServlet
     response.sendError(HttpServletResponse.SC_NOT_FOUND);
   }
 
-  protected boolean userRoleIs(final String role) {
-    final var currentUser = getCurrentUser();
-    if (currentUser == null) {
-      return false;
-    }
-    final var currentRole = currentUser.role();
-    if (currentRole == null) {
-      return false;
-    }
-    return currentRole.equals(role);
-  }
-
-  protected boolean userRoleIsIn(
-      final String role1,
-      final String role2)
-  {
-    final var currentUser = getCurrentUser();
-    if (currentUser == null) {
-      return false;
-    }
-    final var currentRole = currentUser.role();
-    if (currentRole == null) {
-      return false;
-    }
-    return currentRole.equals(role1) || currentRole.equals(role2);
-  }
-
-  protected boolean userRoleIsIn(
-      final String role1,
-      final String role2,
-      final String role3)
-  {
-    final var currentUser = getCurrentUser();
-    if (currentUser == null) {
-      return false;
-    }
-    final var currentRole = currentUser.role();
-    if (currentRole == null) {
-      return false;
-    }
-    return currentRole.equals(role1) || currentRole.equals(role2) || currentRole.equals(role3);
-  }
-
-  protected boolean userRoleIsIn(
-      final String role1,
-      final String role2,
-      final String role3,
-      final String role4)
-  {
-    final var currentUser = getCurrentUser();
-    if (currentUser == null) {
-      return false;
-    }
-    final var currentRole = currentUser.role();
-    if (currentRole == null) {
-      return false;
-    }
-    return currentRole.equals(role1) || currentRole.equals(role2) || currentRole.equals(role3) || currentRole.equals(role4);
-  }
+  protected boolean userLogged() {return getCurrentUser() != null;}
 
   protected abstract HasUserRole getCurrentUser();
 

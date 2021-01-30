@@ -34,9 +34,11 @@ import java.util.regex.Pattern;
 
 final class Route {
   private static final ClassName PATTERN_CLASS_NAME = ClassName.get(Pattern.class);
-  private static final String WITHOUT_REGEX = "";
-  private static final String[] WITHOUT_PARAMETERS = {};
-  private static final String[] OF_PARAMETERS = WITHOUT_PARAMETERS;
+  private static final String NO_PATTERN = "";
+  private static final String NO_REGEX = "";
+  private static final String[] NO_PARAMETERS = {};
+  private static final String[] OF_PARAMS = NO_PARAMETERS;
+  static final String[] NO_ROLES = NO_PARAMETERS;
 
   final HttpVerb verb;
   final String path;
@@ -44,16 +46,22 @@ final class Route {
   final String regex;
   final String handler;
   final String[] parameters;
-  final String[] roles;
+  final boolean requiresUserLogged;
+  final boolean requiresUserNotLogged;
+  final String[] allowedRoles;
+  final String[] rejectedRoles;
 
   Route(
       final String path,
       final HttpVerb verb,
-      final String pattern,
-      final String[] roles,
+      final String uri,
+      final boolean requiresUserLogged,
+      final boolean requiresUserNotLogged,
+      final String[] allowedRoles,
+      final String[] rejectedRoles,
       final String handler)
   {
-    this(path, verb, pattern, WITHOUT_REGEX, roles, handler, WITHOUT_PARAMETERS);
+    this(path, verb, uri, NO_REGEX, requiresUserLogged, requiresUserNotLogged, allowedRoles, rejectedRoles, handler, NO_PARAMETERS);
   }
 
   Route(
@@ -61,11 +69,14 @@ final class Route {
       final HttpVerb verb,
       final String pattern,
       final String regex,
-      final String[] roles,
+      final boolean requiresUserLogged,
+      final boolean requiresUserNotLogged,
+      final String[] allowedRoles,
+      final String[] rejectedRoles,
       final String handler,
       final List<String> parameters)
   {
-    this(path, verb, pattern, regex, roles, handler, parameters.toArray(OF_PARAMETERS));
+    this(path, verb, pattern, regex, requiresUserLogged, requiresUserNotLogged, allowedRoles, rejectedRoles, handler, parameters.toArray(OF_PARAMS));
   }
 
   private Route(
@@ -73,7 +84,10 @@ final class Route {
       final HttpVerb verb,
       final String pattern,
       final String regex,
-      final String[] roles,
+      final boolean requiresUserLogged,
+      final boolean requiresUserNotLogged,
+      final String[] allowedRoles,
+      final String[] rejectedRoles,
       final String handler,
       final String[] parameters)
   {
@@ -81,10 +95,17 @@ final class Route {
     this.verb = verb;
     this.pattern = pattern;
     this.regex = regex;
-    if (roles == null) {
-      this.roles = new String[0];
+    this.requiresUserLogged=requiresUserLogged;
+    this.requiresUserNotLogged=requiresUserNotLogged;
+    if (allowedRoles == null) {
+      this.allowedRoles = NO_ROLES;
     } else {
-      this.roles = roles.clone();
+      this.allowedRoles = allowedRoles;
+    }
+    if (rejectedRoles == null) {
+      this.rejectedRoles = NO_ROLES;
+    } else {
+      this.rejectedRoles = rejectedRoles;
     }
     this.parameters = parameters;
     this.handler = handler;
@@ -110,23 +131,7 @@ final class Route {
 
   @Override public String toString() { return "Route(verb=" + verb + ", pattern='" + pattern + "')"; }
 
-  boolean hasRoleConstrains() { return this.roles.length > 0; }
-
-  String rolesExpr()
-  {
-    switch (this.roles.length) {
-    case 1:
-      return "userRoleIs($S)";
-    case 2:
-      return "userRoleIsIn($S, $S)";
-    case 3:
-      return "userRoleIsIn($S, $S, $S)";
-    case 4:
-      return "userRoleIsIn($S, $S, $S, $S)";
-    default:
-      throw new IllegalStateException("roles count not supported!");
-    }
-  }
+  boolean hasRoleConstrains() { return this.allowedRoles.length > 0; }
 
   String routeField() { return this.verb.name() + '_' + handler; }
 
@@ -177,5 +182,29 @@ final class Route {
       property.initializer("path($S, $S)", this.path, pattern);
     }
     return property.build();
+  }
+
+  boolean hasOneAllowedRole() {
+    return allowedRoles.length == 1;
+  }
+
+  boolean hasManyAllowedRole() {
+    return allowedRoles.length > 1;
+  }
+
+  String allowedRole() {
+    return allowedRoles[0];
+  }
+
+  boolean hasOneRejectedRole() {
+    return rejectedRoles.length == 1;
+  }
+
+  boolean hasManyRejectedRole() {
+    return rejectedRoles.length > 1;
+  }
+
+  String rejectedRole() {
+    return rejectedRoles[0];
   }
 }

@@ -20,6 +20,10 @@ public final class Tasks__barmanImpl extends Tasks {
 
   private final RouterServlet.Path GET_author = path("/api/tasks/author", "/author");
 
+  private final RouterServlet.Path POST_login = path("/api/tasks/login", "/login");
+
+  private final RouterServlet.Path POST_logout = path("/api/tasks/logout", "/logout");
+
   private final RouterServlet.Path PUT_update = path("/api/tasks/{id}", "/{id}", Pattern.compile("/(?<id>[^/]+)"), "id");
 
   private final RouterServlet.Path DELETE_delete = path("/api/tasks/{id}", "/{id}", Pattern.compile("/(?<id>[^/]+)"), "id");
@@ -27,27 +31,27 @@ public final class Tasks__barmanImpl extends Tasks {
   @Override
   public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws
                                                                                           ServletException, IOException {
+    if (!userLogged()) {
+      notAuthorized(response);
+      return;
+    }
+    switch (getCurrentUser().role()) {
+    case "user":
+    case "configurator":
+      break;
+    default:
+      notAuthorized(response);
+      return;
+    }
     if (indexPath.matches(request)) {
-      if (!userRoleIsIn("user", "configurator")) {
-        notAuthorized(response);
-        return;
-      }
       index(request, response);
       return;
     }
     if (GET_get.matches(request)) {
-      if (!userRoleIsIn("user", "configurator")) {
-        notAuthorized(response);
-        return;
-      }
       get(request, response);
       return;
     }
     if (GET_author.matches(request)) {
-      if (!userRoleIsIn("user", "configurator")) {
-        notAuthorized(response);
-        return;
-      }
       author(request, response);
       return;
     }
@@ -59,11 +63,35 @@ public final class Tasks__barmanImpl extends Tasks {
   public void doPost(final HttpServletRequest request, final HttpServletResponse response) throws
                                                                                            ServletException, IOException {
     if (indexPath.matches(request)) {
-      if (!userRoleIsIn("user", "configurator")) {
+      if (!userLogged()) {
+        notAuthorized(response);
+        return;
+      }
+      switch (getCurrentUser().role()) {
+      case "user":
+      case "configurator":
+        break;
+      default:
         notAuthorized(response);
         return;
       }
       save(request, response);
+      return;
+    }
+    if (POST_login.matches(request)) {
+      if (userLogged()) {
+        notAuthorized(response);
+        return;
+      }
+      login(request, response);
+      return;
+    }
+    if (POST_logout.matches(request)) {
+      if (!userLogged()) {
+        notAuthorized(response);
+        return;
+      }
+      logout(request, response);
       return;
     }
     response.setHeader("Access-Control-Allow-Origin", "*");
@@ -73,11 +101,19 @@ public final class Tasks__barmanImpl extends Tasks {
   @Override
   public void doPut(final HttpServletRequest request, final HttpServletResponse response) throws
                                                                                           ServletException, IOException {
+    if (!userLogged()) {
+      notAuthorized(response);
+      return;
+    }
+    switch (getCurrentUser().role()) {
+    case "user":
+    case "configurator":
+      break;
+    default:
+      notAuthorized(response);
+      return;
+    }
     if (PUT_update.matches(request)) {
-      if (!userRoleIsIn("user", "configurator")) {
-        notAuthorized(response);
-        return;
-      }
       update(request, response);
       return;
     }
@@ -88,11 +124,19 @@ public final class Tasks__barmanImpl extends Tasks {
   @Override
   public void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws
                                                                                              ServletException, IOException {
+    if (!userLogged()) {
+      notAuthorized(response);
+      return;
+    }
+    switch (getCurrentUser().role()) {
+    case "user":
+    case "configurator":
+      break;
+    default:
+      notAuthorized(response);
+      return;
+    }
     if (DELETE_delete.matches(request)) {
-      if (!userRoleIsIn("user", "configurator")) {
-        notAuthorized(response);
-        return;
-      }
       delete(request, response);
       return;
     }
