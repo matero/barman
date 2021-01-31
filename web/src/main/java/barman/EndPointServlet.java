@@ -1,4 +1,27 @@
-package barman.web;
+/*
+ The MIT License
+
+ Copyright 2021 Juan José GIL (matero _at_ gmail _dot_ com)
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ */
+package barman;
 
 import argo.format.CompactJsonFormatter;
 import argo.format.JsonFormatter;
@@ -35,12 +58,9 @@ public abstract class EndPointServlet
 
   public synchronized static void writeCompactJson() { JSON_FORMATTER = new CompactJsonFormatter(); }
 
-  protected EndPointServlet()
-  {
-    /* nothing to do */
-  }
+  protected EndPointServlet() {/* nothing to do */}
 
-  /* request manipulation ************************************************** */
+  /* request manipulation*************************************************/
 
   /**
    Reads the text at the request body.
@@ -84,7 +104,7 @@ public abstract class EndPointServlet
     return JDOM_PARSER.parse(content);
   }
 
-  /* response manipulation ************************************************* */
+  /* response manipulation************************************************/
   protected static String to(final String location) { return location; }
 
   protected static int withStatus(final int httpStatusCode) { return httpStatusCode; }
@@ -215,7 +235,8 @@ public abstract class EndPointServlet
 
    @param content the content to write into the response.
    @throws javax.servlet.ServletException if the response is already committed.
-   @throws java.io.IOException             */
+   @throws java.io.IOException
+   */
   void send(
       final HttpServletResponse response,
       final CharSequence content)

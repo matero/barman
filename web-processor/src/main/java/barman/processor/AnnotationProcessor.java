@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package barman.web.processor;
+package barman.processor;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;

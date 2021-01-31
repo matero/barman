@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+The MIT License
+
+Copyright 2021 Juan José GIL (matero _at_ gmail _dot_ com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -18,6 +41,11 @@
         <system>GitHub Issues</system>
     </issueManagement>
 
+    <ciManagement>
+        <system>travis-ci</system>
+        <url>https://travis-ci.org/github/matero/barman</url>
+    </ciManagement>
+
     <licenses>
         <license>
             <name>MIT License</name>
@@ -33,7 +61,7 @@
     </scm>
 
     <prerequisites>
-        <maven>3.6.0</maven>
+        <maven>3.6.3</maven>
     </prerequisites>
 
     <developers>
@@ -162,6 +190,8 @@
     </dependencyManagement>
 
     <build>
+        <defaultGoal>clean package apache-rat:check</defaultGoal>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -239,6 +269,60 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.22.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>0.10</version>
+                <configuration>
+                    <excludes>
+                        <exclude>mvnw*</exclude>
+                        <exclude>**/target/**/*</exclude>
+                        <exclude>**/.settings/**/*</exclude>
+                        <exclude>.mvn/**/*</exclude>
+                        <exclude>**/.project</exclude>
+                        <exclude>**/.classpath</exclude>
+                        <exclude>**/.git/**/*</exclude>
+                        <exclude>**/README.md</exclude>
+                        <exclude>**/MANIFEST.MF</exclude>
+                        <exclude>**/*.iml</exclude>
+                        <exclude>**/*.iws</exclude>
+                        <exclude>**/*.ipr</exclude>
+                        <exclude>**/.gitignore</exclude>
+                        <exclude>**/.travis.yml</exclude>
+                        <exclude>**/instrumentation.txt</exclude>
+                        <exclude>**/src/test/resources/**/*.sql</exclude>
+                        <!-- META-INF/services files -->
+                        <exclude>**/services/*LoggingModule</exclude>
+                        <exclude>**/services/*ApiMetadata</exclude>
+                        <exclude>**/services/*ProviderMetadata</exclude>
+                    </excludes>
+                    <licenses>
+                        <license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
+                            <licenseFamilyCategory>MIT</licenseFamilyCategory>
+                            <licenseFamilyName>The MIT License (MIT)</licenseFamilyName>
+                            <patterns>
+                                <pattern>MIT License</pattern>
+                            </patterns>
+                        </license>
+                    </licenses>
+                    <licenseFamilies>
+                        <licenseFamily implementation="org.apache.rat.license.SimpleLicenseFamily">
+                            <familyName>The MIT License (MIT)</familyName>
+                        </licenseFamily>
+                    </licenseFamilies>
+                    <addLicenseHeaders>forced</addLicenseHeaders>
+                    <ignoreErrors>false</ignoreErrors>
+                    <excludeSubProjects>false</excludeSubProjects>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

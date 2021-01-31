@@ -23,17 +23,6 @@
  */
 package barman;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.PACKAGE;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
-@Retention(SOURCE)
-@Target(PACKAGE)
-public @interface WebApp
-{
-  String admin() default "/admin";
-
-  String api() default "/api/v1";
+public interface HasUserRole {
+  String role();
 }
