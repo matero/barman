@@ -1,3 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.0//EN"
+        "https://checkstyle.org/dtds/suppressions_1_0.dtd">
+<!--
 The MIT License
 
 Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
@@ -19,3 +24,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+-->
+<suppressions>
+    <suppress checks="Header" files="NOTICE.txt" />
+    <suppress checks="Header" files="LICENSE.txt" />
+    <suppress checks="Header" files="target/.*" />
+    <suppress checks="Header" files=".*[/\\]TestQueries.properties" />
+    <suppress checks="Javadoc" files=".*[/\\]test[/\\].*" />
+    <suppress checks="MagicNumber" files=".*[/\\]test[/\\].*" />
+    <suppress checks="MethodName" files=".*[/\\]test[/\\].*" />
+</suppressions>

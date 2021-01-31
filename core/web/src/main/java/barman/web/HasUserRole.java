@@ -1,3 +1,4 @@
+/*
 The MIT License
 
 Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
@@ -19,3 +20,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
+package barman.web;
+
+/** Interface to implement to provide the active user roles to barman.web. */
+public interface HasUserRole
+{
+  /** @return {@literal null} if no user is logged; {@literal !null} in other way. */
+  String role();
+}

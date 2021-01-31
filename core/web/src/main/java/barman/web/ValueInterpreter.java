@@ -1,3 +1,4 @@
+/*
 The MIT License
 
 Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
@@ -19,3 +20,18 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
+package barman.web;
+
+/**
+ Defines how to interpret an {@link String} into some expected type {@link T}.
+
+ @param <T> Type expected to be interpreted from {@link String}s. */
+@FunctionalInterface public interface ValueInterpreter<T>
+{
+  /**
+   @param rawValue {@link String} to be interpreted as {@link T}.
+   @return {@code rawValue} interpreted as {@link T}.
+   */
+  T from(String rawValue);
+}

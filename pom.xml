@@ -2,7 +2,7 @@
 <!--
 The MIT License
 
-Copyright 2021 Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -83,114 +83,11 @@ THE SOFTWARE.
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.release>11</maven.compiler.release>
-        <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
-
-        <archiveClasses>true</archiveClasses>
-        <slf4j.target.version>1.7.30</slf4j.target.version>
-        <junit.target.version>5.7.0</junit.target.version>
-        <checkVersions>false</checkVersions>
-
         <netbeans.hint.license>mit</netbeans.hint.license>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>barman</groupId>
-                <artifactId>build-tools</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>barman</groupId>
-                <artifactId>web-metadata</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>barman</groupId>
-                <artifactId>web</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>4.0.0</version>
-            </dependency>
-
-            <!-- =========================================================== -->
-            <!-- Logging                                                     -->
-            <!-- =========================================================== -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.target.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-ext</artifactId>
-                <version>${slf4j.target.version}</version>
-            </dependency>
-
-            <!-- =========================================================== -->
-            <!-- json                                                        -->
-            <!-- =========================================================== -->
-            <dependency>
-                <groupId>net.sourceforge.argo</groupId>
-                <artifactId>argo</artifactId>
-                <version>5.16</version>
-            </dependency>
-
-            <!-- =========================================================== -->
-            <!-- utilities                                                   -->
-            <!-- =========================================================== -->
-            <dependency>
-                <groupId>com.squareup</groupId>
-                <artifactId>javapoet</artifactId>
-                <version>1.13.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.auto.service</groupId>
-                <artifactId>auto-service</artifactId>
-                <version>1.0-rc5</version>
-            </dependency>
-
-            <!-- =========================================================== -->
-            <!-- testing                                                     -->
-            <!-- =========================================================== -->
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-api</artifactId>
-                <version>${junit.target.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
-                <version>${junit.target.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>3.19.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>2.0.2-beta</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.testing.compile</groupId>
-                <artifactId>compile-testing</artifactId>
-                <version>0.19</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <build>
-        <defaultGoal>clean package apache-rat:check</defaultGoal>
+        <defaultGoal>clean install apache-rat:check</defaultGoal>
 
         <plugins>
             <plugin>
@@ -243,34 +140,6 @@ THE SOFTWARE.
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-            </plugin>
-            <plugin>
-                <!-- This plugin will set properties values using dependency information -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>properties</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.22.2</version>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
                 <version>0.10</version>
@@ -311,7 +180,7 @@ THE SOFTWARE.
                             <familyName>The MIT License (MIT)</familyName>
                         </licenseFamily>
                     </licenseFamilies>
-                    <addLicenseHeaders>forced</addLicenseHeaders>
+                    <addLicenseHeaders>false</addLicenseHeaders>
                     <ignoreErrors>false</ignoreErrors>
                     <excludeSubProjects>false</excludeSubProjects>
                 </configuration>
@@ -327,79 +196,8 @@ THE SOFTWARE.
         </plugins>
     </build>
 
-    <profiles>
-        <!-- Profile used to check versions of dependencies and plugins -->
-        <profile>
-            <id>checkVersions</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <file>
-                    <missing>noCheckVersions</missing>
-                </file>
-                <property>
-                    <name>checkVersions</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-enforcer-plugin</artifactId>
-                        <version>3.0.0-M3</version>
-                        <executions>
-                            <execution>
-                                <id>enforce-versions</id>
-                                <goals>
-                                    <goal>enforce</goal>
-                                </goals>
-                                <configuration>
-                                    <rules>
-                                        <requireMavenVersion>
-                                            <version>3.6</version>
-                                        </requireMavenVersion>
-                                        <requireJavaVersion>
-                                            <version>${maven.compiler.target}</version>
-                                        </requireJavaVersion>
-                                    </rules>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>versions-maven-plugin</artifactId>
-                        <version>2.8.1</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>display-dependency-updates</goal>
-                                    <goal>display-plugin-updates</goal>
-                                </goals>
-                                <phase>compile</phase>
-                                <configuration>
-                                    <rulesUri>classpath:///versions-rules.xml</rulesUri>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>barman</groupId>
-                                <artifactId>build-tools</artifactId>
-                                <version>${project.version}</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
     <modules>
         <module>build-tools</module>
-        <module>web-metadata</module>
-        <module>web</module>
-        <module>web-processor</module>
+        <module>core</module>
     </modules>
 </project>

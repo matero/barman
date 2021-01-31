@@ -1,3 +1,4 @@
+/*
 The MIT License
 
 Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
@@ -19,3 +20,37 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
+package test;
+
+import barman.web.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@Endpoint(admin=true) class Tasks extends TestEndPoint
+{
+  @GET void index(final HttpServletRequest request, final HttpServletResponse response)
+  {
+  }
+
+  @GET("{id}") void get(final HttpServletRequest request, final HttpServletResponse response)
+  {
+  }
+
+  @GET void author(final HttpServletRequest request, final HttpServletResponse response)
+  {
+  }
+
+  @POST void save(final HttpServletRequest request, final HttpServletResponse response)
+  {
+  }
+
+  @PUT("{id}") void update(final HttpServletRequest request, final HttpServletResponse response)
+  {
+  }
+
+  @DELETE("{id}") void delete(final HttpServletRequest request, final HttpServletResponse response)
+  {
+  }
+}

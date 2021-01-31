@@ -1,3 +1,4 @@
+/*
 The MIT License
 
 Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
@@ -19,3 +20,23 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
+package barman.web;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+/** Marks a class to be recognized by EndpointCompiler. */
+@Retention(SOURCE)
+@Target(TYPE)
+public @interface Endpoint
+{
+  /** @return the path of the endpoint. */
+  String value() default "";
+
+  /** @return if the endpoint is for admins. */
+  boolean admin() default false;
+}

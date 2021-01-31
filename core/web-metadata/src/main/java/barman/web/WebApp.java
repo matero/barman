@@ -1,3 +1,4 @@
+/*
 The MIT License
 
 Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
@@ -19,3 +20,22 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
+package barman.web;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.PACKAGE;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
+@Retention(SOURCE)
+@Target(PACKAGE)
+public @interface WebApp
+{
+  /** @return default base path for admin endpoints. */
+  String admin() default "/admin";
+
+  /** @return default base path for api endpoints. */
+  String api() default "/api/v1";
+}

@@ -2,7 +2,7 @@
 <!--
 The MIT License
 
-Copyright 2021 Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ THE SOFTWARE.
     <ignoreVersion type="regex">(?i).*Beta(?:-?\d+)?</ignoreVersion>
     <ignoreVersion type="regex">(?i).*-B(?:-?\d+)?</ignoreVersion>
     <ignoreVersion type="regex">(?i).*RC(?:-?\d+)?</ignoreVersion>
-    <ignoreVersion type="regex">(?i).*CR(?:-?\d+)?</ignoreVersion>p
+    <ignoreVersion type="regex">(?i).*CR(?:-?\d+)?</ignoreVersion>
     <ignoreVersion type="regex">(?i).*M(?:-?\d+)?</ignoreVersion>
     <ignoreVersion type="regex">(?i).*b(?:-?[\d\\.]+)?</ignoreVersion>
   </ignoreVersions>
