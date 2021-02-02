@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) 2021 Juan J. GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,7 @@ class EndPointSpec
     this.noLoggerDefined = noLoggerDefined;
   }
 
-  TypeName routerClass()
+  static TypeName routerClass()
   {
     return ClassName.get(RouterServlet.class);
   }
@@ -84,7 +84,7 @@ class EndPointSpec
       final String today)
   {
     return new Builder(new LinkedList<>(),
-        new EnumMap<HttpVerb, List<Route>>(HttpVerb.class),
+        new EnumMap<>(HttpVerb.class),
         new StringBuilder(),
         today,
         endpointClass);

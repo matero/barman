@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) 2021 Juan J. GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -80,7 +80,7 @@ public abstract class RequestValueReader<T>
    @param request {@link HttpServletRequest} where to get the value definition.
    @return the value to use when this is defined under {@code request}.
    */
-  protected T valueDefined(HttpServletRequest request)
+  protected T valueDefined(final HttpServletRequest request)
   {
     return interpretValue.from(read(request));
   }

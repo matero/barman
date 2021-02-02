@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) 2021 Juan J. GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -127,7 +127,7 @@ final class Route
       return true;
     }
     if (o instanceof Route) {
-      var other = (Route) o;
+      final var other = (Route) o;
       return this.verb == other.verb && pattern.equals(other.pattern);
     }
     return false;

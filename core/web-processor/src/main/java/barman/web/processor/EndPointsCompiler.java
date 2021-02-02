@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) 2021 Juan J. GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -144,7 +144,7 @@ public final class EndPointsCompiler
 
   private void generateJavaCode(
       final EndPointSpec routes,
-      boolean isDevelopmentEnvironment)
+      final boolean isDevelopmentEnvironment)
   {
     final var routerCode = this.routerBuilder.buildJavaCode(routes, isDevelopmentEnvironment);
     try {

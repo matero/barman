@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) 2021 Juan J. GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -661,7 +661,7 @@ public abstract class EndPointServlet
    @return the raw text at the {@link HttpServletRequest} associated to the controller.
    @throws IOException if some problem occurs while reading the text.
    */
-  protected String body(final HttpServletRequest request)
+  protected static String body(final HttpServletRequest request)
       throws IOException
   {
     final BufferedReader reader = request.getReader();
@@ -691,7 +691,7 @@ public abstract class EndPointServlet
     return JDOM_PARSER.parse(reader);
   }
 
-  protected JsonNode json(final String content)
+  protected static JsonNode json(final String content)
       throws InvalidSyntaxException
   {
     return JDOM_PARSER.parse(content);
@@ -767,7 +767,7 @@ public abstract class EndPointServlet
     }
   }
 
-  protected String format(final JsonNode json)
+  protected static String format(final JsonNode json)
   {
     return jsonFormatter.format(json);
   }
@@ -846,7 +846,7 @@ public abstract class EndPointServlet
     set(response, StatusCode.OK);
   }
 
-  protected void unprocessableEntity(final HttpServletResponse response)
+  protected static void unprocessableEntity(final HttpServletResponse response)
       throws IOException
   {
     response.sendError(StatusCode.SC_UNPROCESSABLE_ENTITY);
@@ -862,7 +862,7 @@ public abstract class EndPointServlet
     response.sendError(StatusCode.SC_UNPROCESSABLE_ENTITY, json);
   }
 
-  protected void notFound(final HttpServletResponse response)
+  protected static void notFound(final HttpServletResponse response)
       throws IOException
   {
     response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -875,7 +875,7 @@ public abstract class EndPointServlet
 
   protected abstract HasUserRole getCurrentUser();
 
-  protected void set(
+  protected static void set(
       final HttpServletResponse response,
       final StatusCode statusCode)
   {
@@ -889,7 +889,7 @@ public abstract class EndPointServlet
     response.setContentType(contentType.mediaType);
   }
 
-  protected void set(
+  protected static void set(
       final HttpServletResponse response,
       final Header header,
       final String value)
@@ -897,7 +897,7 @@ public abstract class EndPointServlet
     response.setHeader(header.name, value);
   }
 
-  protected void set(
+  protected static void set(
       final HttpServletResponse response,
       final Header header,
       final int value)
@@ -905,7 +905,7 @@ public abstract class EndPointServlet
     response.setIntHeader(header.name, value);
   }
 
-  protected void set(
+  protected static void set(
       final HttpServletResponse response,
       final Header header,
       final Date value)
@@ -913,7 +913,7 @@ public abstract class EndPointServlet
     response.setDateHeader(header.name, value.getTime());
   }
 
-  protected void set(
+  protected static void set(
       final HttpServletResponse response,
       final Header header,
       final long timestamp)
@@ -921,7 +921,7 @@ public abstract class EndPointServlet
     response.setDateHeader(header.name, timestamp);
   }
 
-  protected void add(
+  protected static void add(
       final HttpServletResponse response,
       final Header header,
       final String value)
@@ -929,7 +929,7 @@ public abstract class EndPointServlet
     response.addHeader(header.name, value);
   }
 
-  protected void add(
+  protected static void add(
       final HttpServletResponse response,
       final Header header,
       final int value)
@@ -937,7 +937,7 @@ public abstract class EndPointServlet
     response.addIntHeader(header.name, value);
   }
 
-  protected void add(
+  protected static void add(
       final HttpServletResponse response,
       final Header header,
       final Date value)
@@ -945,7 +945,7 @@ public abstract class EndPointServlet
     response.addDateHeader(header.name, value.getTime());
   }
 
-  protected void add(
+  protected static void add(
       final HttpServletResponse response,
       final Header header,
       final long timestamp)

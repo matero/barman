@@ -2,7 +2,7 @@
  *
  *  The MIT License
  *
- *  Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
+ *  Copyright (c) 2021 Juan J. GIL (matero _at_ gmail _dot_ com)
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -26,17 +26,15 @@
 package barman.web.processor;
 
 import com.google.testing.compile.Compilation;
-
-import static com.google.testing.compile.CompilationSubject.assertThat;
-
 import com.google.testing.compile.Compiler;
-
-import static com.google.testing.compile.Compiler.javac;
-
 import com.google.testing.compile.JavaFileObjects;
 import org.junit.jupiter.api.Test;
 
-class RoutesProcessingTest {
+import static com.google.testing.compile.CompilationSubject.assertThat;
+import static com.google.testing.compile.Compiler.javac;
+
+class RoutesProcessingTest
+{
   static final String GENERATION_DATE = "2017-02-23";
 
   final Compiler compiler = javac().withProcessors(new EndPointsCompiler(GENERATION_DATE, new RoutersCodeBuilder()));

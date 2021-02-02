@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) 2021 Juan J. GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -150,7 +150,7 @@ class RoutesReader
     }
   }
 
-  private String handlerPath(
+  private static String handlerPath(
       final ExecutableElement method,
       final String path)
   {
@@ -191,7 +191,7 @@ class RoutesReader
     return "";
   }
 
-  private String getPath(final TypeElement endpoint)
+  private static String getPath(final TypeElement endpoint)
   {
     return endpoint.getAnnotation(Endpoint.class).value();
   }

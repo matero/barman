@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) 2021 Juan J. GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -50,12 +50,12 @@ public abstract class QueryParameter<T>
    @param request {@link HttpServletRequest} where to check if the value is defined or not.
    @return if the {@code request} parameters map holds this query parameter's name.
    */
-  public final boolean isDefinedAt(final HttpServletRequest request)
+  @Override public final boolean isDefinedAt(final HttpServletRequest request)
   {
     return request.getParameterMap().containsKey(name);
   }
 
-  protected final String read(final HttpServletRequest request)
+  @Override protected final String read(final HttpServletRequest request)
   {
     return request.getParameter(name);
   }

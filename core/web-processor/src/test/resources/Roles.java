@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) 2021 Juan J. GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,13 @@ THE SOFTWARE.
 */
 package test;
 
-import barman.web.*;
+import barman.web.DELETE;
+import barman.web.Endpoint;
+import barman.web.GET;
+import barman.web.LoggedUser;
+import barman.web.POST;
+import barman.web.PUT;
+import barman.web.TestEndPoint;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

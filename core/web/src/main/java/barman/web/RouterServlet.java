@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) 2021 Juan J. GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -128,7 +128,7 @@ public abstract class RouterServlet
     super.doTrace(request, response);
   }
 
-  protected void notAuthorized(final HttpServletResponse response)
+  protected static void notAuthorized(final HttpServletResponse response)
   {
     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
   }

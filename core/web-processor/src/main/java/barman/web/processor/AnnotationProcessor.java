@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) 2021 Juan J. GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -175,7 +175,7 @@ public abstract class AnnotationProcessor
     messager().printMessage(kind, msg, e, a, v);
   }
 
-  protected final String message(final Throwable t)
+  protected static String message(final Throwable t)
   {
     return t.getMessage() == null ? "unknown error" : t.getMessage();
   }

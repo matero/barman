@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) Juan José GIL (matero _at_ gmail _dot_ com)
+Copyright (c) 2021 Juan J. GIL (matero _at_ gmail _dot_ com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,7 @@ class RoutersCodeBuilder
 
   JavaFile buildJavaCode(
       final EndPointSpec declarations,
-      boolean isDevelopmentEnvironment)
+      final boolean isDevelopmentEnvironment)
   {
     final var classname = declarations.routerClassName();
     final var router = TypeSpec.classBuilder(classname)
@@ -105,7 +105,7 @@ class RoutersCodeBuilder
   void addRouteHandlers(
       final TypeSpec.Builder router,
       final EndPointSpec declarations,
-      boolean isDevelopmentEnvironment)
+      final boolean isDevelopmentEnvironment)
   {
     for (final var httpVerb : HttpVerb.values()) {
       final var routes = declarations.routesByVerb.get(httpVerb);
@@ -120,7 +120,7 @@ class RoutersCodeBuilder
     }
   }
 
-  MethodSpec overrideVerbHandlerOnDevelopmentEnvironment(final HttpVerb httpVerb)
+  static MethodSpec overrideVerbHandlerOnDevelopmentEnvironment(final HttpVerb httpVerb)
   {
     final MethodSpec.Builder httpVerbHandler = MethodSpec
                                                    .methodBuilder(httpVerb.handler)
@@ -177,7 +177,7 @@ class RoutersCodeBuilder
     return httpVerbHandler.build();
   }
 
-  private boolean doAllRoutesRequireUserLogged(final List<Route> routes)
+  private static boolean doAllRoutesRequireUserLogged(final List<Route> routes)
   {
     for (final Route r : routes) {
       if (!r.requiresUserLogged) {
@@ -187,7 +187,7 @@ class RoutersCodeBuilder
     return true;
   }
 
-  private boolean doAllRoutesRequireUserNotLogged(final List<Route> routes)
+  private static boolean doAllRoutesRequireUserNotLogged(final List<Route> routes)
   {
     for (final Route r : routes) {
       if (!r.requiresUserNotLogged) {
@@ -197,7 +197,7 @@ class RoutersCodeBuilder
     return true;
   }
 
-  private boolean doAllRoutesHasSameAllowedRoles(final List<Route> routes)
+  private static boolean doAllRoutesHasSameAllowedRoles(final List<Route> routes)
   {
     if (routes.size() < 2) {
       return true;
@@ -212,7 +212,7 @@ class RoutersCodeBuilder
     return true;
   }
 
-  private boolean doAllRoutesHasSameRejectedRoles(final List<Route> routes)
+  private static boolean doAllRoutesHasSameRejectedRoles(final List<Route> routes)
   {
     if (routes.size() < 2) {
       return true;
@@ -251,7 +251,7 @@ class RoutersCodeBuilder
     control.addStatement("return");
   }
 
-  private void addUserLoggedValidation(final MethodSpec.Builder httpVerbHandler)
+  private static void addUserLoggedValidation(final MethodSpec.Builder httpVerbHandler)
   {
     httpVerbHandler.beginControlFlow("if (!userLogged())")
                    .addStatement("notAuthorized(response)")
@@ -259,7 +259,7 @@ class RoutersCodeBuilder
                    .endControlFlow();
   }
 
-  private void addUserNotLoggedValidation(final MethodSpec.Builder control)
+  private static void addUserNotLoggedValidation(final MethodSpec.Builder control)
   {
     control.beginControlFlow("if (userLogged())")
            .addStatement("notAuthorized(response)")
@@ -267,7 +267,7 @@ class RoutersCodeBuilder
            .endControlFlow();
   }
 
-  private void addAllowedRolesValidation(
+  private static void addAllowedRolesValidation(
       final MethodSpec.Builder control,
       final Route route)
   {
