@@ -23,25 +23,44 @@ THE SOFTWARE.
 */
 package barman.sql;
 
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-/**
- * Strategy to implement to map {@link ResultSet} current row into something else, providing the current row index in the {@link ResultSet}.
- *
- * @param <T> Type of the mapping resulting object.
- */
-@FunctionalInterface public interface RowMapperWithIndex<T>
+public class IntValue<SELF extends IntValue<SELF>>
+    implements Comparable<SELF>, ColumnSetter
 {
-  /**
-   * Maps the current row of a {@link ResultSet}.
-   *
-   * @param rs    {@link ResultSet} to work with.
-   * @param index index of the row (starting with 1) in the {@link ResultSet}.
-   * @return an instance of {@code T} representing the current row in {@code rs}; can be {@literal null}.
-   * @throws SQLException if a database access error occurs.
-   */
-  T mapRow(
-      ResultSet rs,
-      int index) throws SQLException;
+  protected final int value;
+
+  IntValue(final int value)
+  {
+    this.value = value;
+  }
+
+  @Override public boolean equals(final Object o)
+  {
+    if (this == o) {
+      return true;
+    }
+    if (getClass().isInstance(o)) {
+      return value == getClass().cast(o).value;
+    }
+    return false;
+  }
+
+  @Override public int hashCode()
+  {
+    return Integer.hashCode(value);
+  }
+
+  @Override public int compareTo(final SELF other)
+  {
+    return value - getClass().cast(other).value;
+  }
+
+  @Override public void set(
+      final PreparedStatement statement,
+      final int columnIndex) throws SQLException
+  {
+    statement.setInt(columnIndex, value);
+  }
 }

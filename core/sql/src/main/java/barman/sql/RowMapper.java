@@ -26,7 +26,19 @@ package barman.sql;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Strategy to implement to map {@link ResultSet} current row into something else.
+ *
+ * @param <T> Type of the mapping resulting object.
+ */
 @FunctionalInterface public interface RowMapper<T>
 {
+  /**
+   * Maps the current row of a {@link ResultSet}.
+   *
+   * @param rs {@link ResultSet} to work with.
+   * @return an instance of {@code T} representing the current row in {@code rs}; can be {@literal null}.
+   * @throws SQLException if a database access error occurs.
+   */
   T mapRow(ResultSet rs) throws SQLException;
 }

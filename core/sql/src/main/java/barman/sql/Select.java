@@ -27,7 +27,7 @@ package barman.sql;
  * SELECT SQL queries with pluggable strategies for handling {@code ResultSet}s.
  */
 public abstract class Select
-    extends Statement
+    extends SqlStatement
 {
   static final int FIRST_COLUMN = 1;
 
@@ -41,7 +41,7 @@ public abstract class Select
    */
   protected Select(
       final String statement,
-      final Statement.Configuration statementConfiguration)
+      final SqlStatement.Configuration statementConfiguration)
   {
     super(statement, statementConfiguration);
   }

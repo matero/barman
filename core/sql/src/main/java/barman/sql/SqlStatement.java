@@ -29,7 +29,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /** The base class for QueryRunner &amp; AsyncQueryRunner. This class is thread safe. */
-public abstract class Statement
+public abstract class SqlStatement
 {
   /** The represented statement, defined as JDBC query string (with '?' for parameters). */
   private final String sql;
@@ -40,36 +40,17 @@ public abstract class Statement
   private final Configuration configuration;
 
   /**
-   * Constructs an instance of {@link Statement} with its sql and configuration.
+   * Constructs an instance of {@link SqlStatement} with its sql and configuration.
    *
    * @param statement              sql statement to be specified by the instance.
    * @param statementConfiguration how to configure related JDBC prepared statements.
-   * @throws NullPointerException     if {@code statement} is {@literal null}.
-   * @throws IllegalArgumentException if {@code statement} is {@code empty} or {@code blank}.
    */
-  protected Statement(
+  protected SqlStatement(
       final String statement,
       final Configuration statementConfiguration)
   {
-    if (statement == null) {
-      throw new NullPointerException("statement");
-    }
-    if (statement.isEmpty()) {
-      throw new IllegalArgumentException("statement is empty");
-    }
-    if (statement.isBlank()) {
-      throw new IllegalArgumentException("statement is blank");
-    }
     sql = statement;
-    configuration = statementConfiguration == null ? Configuration.none() : statementConfiguration;
-  }
-
-  private static String notNullMessageOf(final Exception e)
-  {
-    if (e.getMessage() == null) {
-      return "";
-    }
-    return e.getMessage();
+    configuration = statementConfiguration;
   }
 
   /**
@@ -96,11 +77,6 @@ public abstract class Statement
     return rs;
   }
 
-  private void configureStatement(final java.sql.Statement stmt) throws SQLException
-  {
-    configuration.configureStatement(stmt);
-  }
-
   /**
    * Initializes a {@code PreparedStatement} object for the given SQL.
    * <p>
@@ -114,12 +90,23 @@ public abstract class Statement
   {
     final var ps = connection.prepareStatement(sql);
     try {
-      configureStatement(ps);
+      configure(ps);
+      setParametersTo(ps);
     } catch (final SQLException e) {
       ps.close();
       throw e;
     }
     return ps;
+  }
+
+  protected void configure(final PreparedStatement ps) throws SQLException
+  {
+    configuration.configureStatement(ps);
+  }
+
+  protected void setParametersTo(final PreparedStatement ps) throws SQLException
+  {
+    // nothing to do
   }
 
   /**
@@ -160,9 +147,15 @@ public abstract class Statement
     return msg.append(']').toString();
   }
 
-  protected abstract boolean hasParameters();
+  protected boolean hasParameters()
+  {
+    return false;
+  }
 
-  protected abstract void appendParametersDescriptionTo(StringBuilder msg);
+  protected void appendParametersDescriptionTo(final StringBuilder msg)
+  {
+    // nothing to do
+  }
 
   private enum NoConfiguration
       implements Configuration
@@ -175,6 +168,7 @@ public abstract class Statement
     }
   }
 
+  /** SQL statement configuration to use when fetching data. */
   public interface Configuration
   {
     static Configuration none()
@@ -184,44 +178,44 @@ public abstract class Statement
 
     /**
      * @param value The direction for fetching rows from database tables.
-     * @return A configuration {@link Builder} for with  fetch direction defined.
+     * @return A configuration {@link Specification} for with  fetch direction defined.
      */
-    static Builder withFetchDirection(final int value)
+    static Specification withFetchDirection(final int value)
     {
-      return new Builder().fetchDirection(value);
+      return new Specification().fetchDirection(value);
     }
 
     /**
      * @param value The maximum number of rows that a {@code ResultSet} can produce.
-     * @return A configuration {@link Builder} for with  max rows defined.
+     * @return A configuration {@link Specification} for with  max rows defined.
      */
-    static Builder maxRows(final int value)
+    static Specification maxRows(final int value)
     {
-      return new Builder().maxRows(value);
+      return new Specification().maxRows(value);
     }
 
     /**
      * @param value The number of seconds the driver will wait for execution.
-     * @return A configuration {@link Builder} for with  query timeout defined.
+     * @return A configuration {@link Specification} for with  query timeout defined.
      */
-    static Builder queryTimeout(final int value)
+    static Specification queryTimeout(final int value)
     {
-      return new Builder().queryTimeout(value);
+      return new Specification().queryTimeout(value);
     }
 
     /**
      * @param value The maximum number of bytes that can be returned for character and binary column values.
-     * @return a configuration {@link Builder} with max field size defined.
+     * @return a configuration {@link Specification} with max field size defined.
      */
-    static Builder maxFieldSize(final int value)
+    static Specification maxFieldSize(final int value)
     {
-      return new Builder().maxFieldSize(value);
+      return new Specification().maxFieldSize(value);
     }
 
     void configureStatement(java.sql.Statement stmt) throws SQLException;
 
     /** Builder class for {@code StatementConfiguration} for more flexible construction. */
-    final class Builder
+    final class Specification
     {
       private int fetchDirection = StatementConfiguration.UNDEFINED_PROPERTY;
       private int fetchSize = StatementConfiguration.UNDEFINED_PROPERTY;
@@ -229,7 +223,7 @@ public abstract class Statement
       private int queryTimeout = StatementConfiguration.UNDEFINED_PROPERTY;
       private int maxFieldSize = StatementConfiguration.UNDEFINED_PROPERTY;
 
-      private Builder()
+      private Specification()
       {
         // nothing to do
       }
@@ -238,7 +232,7 @@ public abstract class Statement
        * @param value The direction for fetching rows from database tables.
        * @return This builder for chaining.
        */
-      public Builder fetchDirection(final int value)
+      public Specification fetchDirection(final int value)
       {
         fetchDirection = value;
         return this;
@@ -248,7 +242,7 @@ public abstract class Statement
        * @param value The number of rows that should be fetched from the database when more rows are needed.
        * @return This builder for chaining.
        */
-      public Builder fetchSize(final int value)
+      public Specification fetchSize(final int value)
       {
         fetchSize = value;
         return this;
@@ -258,7 +252,7 @@ public abstract class Statement
        * @param value The maximum number of rows that a {@code ResultSet} can produce.
        * @return This builder for chaining.
        */
-      public Builder maxRows(final int value)
+      public Specification maxRows(final int value)
       {
         maxRows = value;
         return this;
@@ -268,7 +262,7 @@ public abstract class Statement
        * @param value The number of seconds the driver will wait for execution.
        * @return This builder for chaining.
        */
-      public Builder queryTimeout(final int value)
+      public Specification queryTimeout(final int value)
       {
         queryTimeout = value;
         return this;
@@ -278,14 +272,14 @@ public abstract class Statement
        * @param value The maximum number of bytes that can be returned for character and binary column values.
        * @return This builder for chaining.
        */
-      public Builder maxFieldSize(final int value)
+      public Specification maxFieldSize(final int value)
       {
         maxFieldSize = value;
         return this;
       }
 
       /** @return A new and configured {@link Configuration}. */
-      public Configuration build()
+      private Configuration build()
       {
         return new StatementConfiguration(fetchDirection, fetchSize, maxFieldSize, maxRows, queryTimeout);
       }
@@ -305,7 +299,7 @@ public abstract class Statement
     private final int queryTimeout;
 
     /**
-     * Constructor for {@code StatementConfiguration}.  For more flexibility, use {@link Builder}.
+     * Constructor for {@code StatementConfiguration}.  For more flexibility, use {@link Specification}.
      *
      * @param fetchDirection The direction for fetching rows from database tables.
      * @param fetchSize      The number of rows that should be fetched from the database when more rows are needed.
