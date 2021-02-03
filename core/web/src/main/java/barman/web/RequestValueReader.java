@@ -26,9 +26,10 @@ package barman.web;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- Defines how to read values ({@link PathVariable}s, {@link QueryParameter}s, {@link EndPointServlet.Header}s, etc) from requests.
-
- @param <T> Final type interpreted by the {@link RequestValueReader}. */
+ * Defines how to read values ({@link PathVariable}s, {@link QueryParameter}s, {@link EndPointServlet.Header}s, etc) from requests.
+ *
+ * @param <T> Final type interpreted by the {@link RequestValueReader}.
+ */
 public abstract class RequestValueReader<T>
     implements java.io.Serializable
 {
@@ -38,10 +39,10 @@ public abstract class RequestValueReader<T>
   protected final ValueInterpreter<T> interpretValue;
 
   /**
-   Builds a {@link RequestValueReader} defining the value name and interpreter.
-
-   @param name        name used to identify the value.
-   @param interpreter how to interpret the raw {@link String} at the request representing the value.
+   * Builds a {@link RequestValueReader} defining the value name and interpreter.
+   *
+   * @param name        name used to identify the value.
+   * @param interpreter how to interpret the raw {@link String} at the request representing the value.
    */
   protected RequestValueReader(
       final String name,
@@ -52,18 +53,18 @@ public abstract class RequestValueReader<T>
   }
 
   /**
-   Checks if the value is defined in the request.
-
-   @param request {@link HttpServletRequest} where to check if the value is defined or not.
-   @return {@literal true} if the value is defined in the request; {@literal false} other way.
+   * Checks if the value is defined in the request.
+   *
+   * @param request {@link HttpServletRequest} where to check if the value is defined or not.
+   * @return {@literal true} if the value is defined in the request; {@literal false} other way.
    */
   public abstract boolean isDefinedAt(HttpServletRequest request);
 
   /**
-   Gets the interpreted value at some request.
-
-   @param request {@link HttpServletRequest} where to get the value definition.
-   @return the interpretation of the raw {@link String} defined in {@code request} representing this value.
+   * Gets the interpreted value at some request.
+   *
+   * @param request {@link HttpServletRequest} where to get the value definition.
+   * @return the interpretation of the raw {@link String} defined in {@code request} representing this value.
    */
   public final T at(final HttpServletRequest request)
   {
@@ -75,10 +76,10 @@ public abstract class RequestValueReader<T>
   }
 
   /**
-   Gets the value to use when the value is defined in a request.
-
-   @param request {@link HttpServletRequest} where to get the value definition.
-   @return the value to use when this is defined under {@code request}.
+   * Gets the value to use when the value is defined in a request.
+   *
+   * @param request {@link HttpServletRequest} where to get the value definition.
+   * @return the value to use when this is defined under {@code request}.
    */
   protected T valueDefined(final HttpServletRequest request)
   {
@@ -86,20 +87,20 @@ public abstract class RequestValueReader<T>
   }
 
   /**
-   Gets the value to use when the value is not defined in a request.
-   <p>
-   Can use the request as context or to look for another value.
-
-   @param request {@link HttpServletRequest} where to get the value definition.
-   @return the value to use when this is undefined under {@code request}.
+   * Gets the value to use when the value is not defined in a request.
+   * <p>
+   * Can use the request as context or to look for another value.
+   *
+   * @param request {@link HttpServletRequest} where to get the value definition.
+   * @return the value to use when this is undefined under {@code request}.
    */
   protected abstract T valueUndefined(HttpServletRequest request);
 
   /**
-   Gets the raw representation of a <em>defined value</em> at a {@link HttpServletRequest}.
-
-   @param request {@link HttpServletRequest} where to get the value raw representation.
-   @return raw representation of the value t the {@code request}.
+   * Gets the raw representation of a <em>defined value</em> at a {@link HttpServletRequest}.
+   *
+   * @param request {@link HttpServletRequest} where to get the value raw representation.
+   * @return raw representation of the value t the {@code request}.
    */
   protected abstract String read(HttpServletRequest request);
 
@@ -111,10 +112,10 @@ public abstract class RequestValueReader<T>
     public final HttpServletRequest request;
 
     /**
-     Construct an instance of {@link ValueNotDefined} indicating the name of the undefined value and the request where it was undefined.
-
-     @param name    name of the undefined value. It will be accessible as exception message.
-     @param request {@link HttpServletRequest} where the value is undefined.
+     * Construct an instance of {@link ValueNotDefined} indicating the name of the undefined value and the request where it was undefined.
+     *
+     * @param name    name of the undefined value. It will be accessible as exception message.
+     * @param request {@link HttpServletRequest} where the value is undefined.
      */
     ValueNotDefined(
         final String name,

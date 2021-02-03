@@ -24,14 +24,15 @@ THE SOFTWARE.
 package barman.web;
 
 /**
- Defines how to interpret an {@link String} into some expected type {@link T}.
-
- @param <T> Type expected to be interpreted from {@link String}s. */
+ * Defines how to interpret an {@link String} into some expected type {@link T}.
+ *
+ * @param <T> Type expected to be interpreted from {@link String}s.
+ */
 @FunctionalInterface public interface ValueInterpreter<T>
 {
   /**
-   @param rawValue {@link String} to be interpreted as {@link T}.
-   @return {@code rawValue} interpreted as {@link T}.
+   * @param rawValue {@link String} to be interpreted as {@link T}.
+   * @return {@code rawValue} interpreted as {@link T}.
    */
   T from(String rawValue);
 }

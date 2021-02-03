@@ -65,27 +65,6 @@ final class PathSpec
     this.parameters = parameters;
   }
 
-  @Override public int hashCode()
-  {
-    return this.pattern.hashCode();
-  }
-
-  @Override public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o instanceof PathSpec) {
-      return pattern.equals(((PathSpec) o).pattern);
-    }
-    return false;
-  }
-
-  boolean isStatic()
-  {
-    return parameters.isEmpty();
-  }
-
   static PathSpec from(
       final String uri,
       final String urlPattern)
@@ -99,12 +78,12 @@ final class PathSpec
   }
 
   /**
-   Transforms an url pattern like "/{name}/id/*" into a regex like "/([^/]*)/id/*."
-   <p/>
-   Also handles regular expressions if defined inside endpoints: For instance "/users/{username: [a-zA-Z][a-zA-Z_0-9]}" becomes "/users/
-   ([a-zA-Z][a-zA-Z_0-9])"
-
-   @return The converted regex with default matching regex - or the regex specified by the user.
+   * Transforms an url pattern like "/{name}/id/*" into a regex like "/([^/]*)/id/*."
+   * <p/>
+   * Also handles regular expressions if defined inside endpoints: For instance "/users/{username: [a-zA-Z][a-zA-Z_0-9]}" becomes "/users/
+   * ([a-zA-Z][a-zA-Z_0-9])"
+   *
+   * @return The converted regex with default matching regex - or the regex specified by the user.
    */
   static String findRegex(final String urlPattern)
   {
@@ -144,10 +123,10 @@ final class PathSpec
   }
 
   /**
-   Replace any specified POSIX character classes with the Java equivalent.
-
-   @param input POSIX character class to be replaced.
-   @return a Java regex
+   * Replace any specified POSIX character classes with the Java equivalent.
+   *
+   * @param input POSIX character class to be replaced.
+   * @return a Java regex
    */
   static String replacePosixClasses(final String input)
   {
@@ -160,14 +139,14 @@ final class PathSpec
   }
 
   /**
-   Extracts the name of the parameters from a path
-   <p/>
-   /{my_id}/{my_name}
-   <p/>
-   would return a List with "my_id" and "my_name"
-
-   @param uriPattern path to work with.
-   @return a list with the names of all parameters in the url pattern
+   * Extracts the name of the parameters from a path
+   * <p/>
+   * /{my_id}/{my_name}
+   * <p/>
+   * would return a List with "my_id" and "my_name"
+   *
+   * @param uriPattern path to work with.
+   * @return a list with the names of all parameters in the url pattern
    */
   static List<String> findParameterNames(final String uriPattern)
   {
@@ -180,6 +159,27 @@ final class PathSpec
       parameters.add(matcher.group(1));
     }
     return List.copyOf(parameters);
+  }
+
+  @Override public int hashCode()
+  {
+    return this.pattern.hashCode();
+  }
+
+  @Override public boolean equals(final Object o)
+  {
+    if (this == o) {
+      return true;
+    }
+    if (o instanceof PathSpec) {
+      return pattern.equals(((PathSpec) o).pattern);
+    }
+    return false;
+  }
+
+  boolean isStatic()
+  {
+    return parameters.isEmpty();
   }
 
   public Route makeRoute(

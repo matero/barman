@@ -45,6 +45,11 @@ public abstract class AnnotationProcessor
     this.today = today;
   }
 
+  protected static String message(final Throwable t)
+  {
+    return t.getMessage() == null ? "unknown error" : t.getMessage();
+  }
+
   protected final Messager messager()
   {
     return processingEnv.getMessager();
@@ -112,10 +117,10 @@ public abstract class AnnotationProcessor
   }
 
   /**
-   Prints a message of the specified kind.
-
-   @param kind the kind of message
-   @param msg  the message, or an empty string if none
+   * Prints a message of the specified kind.
+   *
+   * @param kind the kind of message
+   * @param msg  the message, or an empty string if none
    */
   protected final void message(
       final Diagnostic.Kind kind,
@@ -125,11 +130,11 @@ public abstract class AnnotationProcessor
   }
 
   /**
-   Prints a message of the specified kind at the location of the element.
-
-   @param kind the kind of message
-   @param msg  the message, or an empty string if none
-   @param e    the element to use as a position hint
+   * Prints a message of the specified kind at the location of the element.
+   *
+   * @param kind the kind of message
+   * @param msg  the message, or an empty string if none
+   * @param e    the element to use as a position hint
    */
   protected final void message(
       final Diagnostic.Kind kind,
@@ -140,12 +145,12 @@ public abstract class AnnotationProcessor
   }
 
   /**
-   Prints a message of the specified kind at the location of the annotation mirror of the annotated element.
-
-   @param kind the kind of message
-   @param msg  the message, or an empty string if none
-   @param e    the annotated element
-   @param a    the annotation to use as a position hint
+   * Prints a message of the specified kind at the location of the annotation mirror of the annotated element.
+   *
+   * @param kind the kind of message
+   * @param msg  the message, or an empty string if none
+   * @param e    the annotated element
+   * @param a    the annotation to use as a position hint
    */
   protected final void message(
       final Diagnostic.Kind kind,
@@ -157,13 +162,13 @@ public abstract class AnnotationProcessor
   }
 
   /**
-   Prints a message of the specified kind at the location of the annotation value inside the annotation mirror of the annotated element.
-
-   @param kind the kind of message
-   @param msg  the message, or an empty string if none
-   @param e    the annotated element
-   @param a    the annotation containing the annotation value
-   @param v    the annotation value to use as a position hint
+   * Prints a message of the specified kind at the location of the annotation value inside the annotation mirror of the annotated element.
+   *
+   * @param kind the kind of message
+   * @param msg  the message, or an empty string if none
+   * @param e    the annotated element
+   * @param a    the annotation containing the annotation value
+   * @param v    the annotation value to use as a position hint
    */
   protected final void message(
       final Diagnostic.Kind kind,
@@ -173,11 +178,6 @@ public abstract class AnnotationProcessor
       final AnnotationValue v)
   {
     messager().printMessage(kind, msg, e, a, v);
-  }
-
-  protected static String message(final Throwable t)
-  {
-    return t.getMessage() == null ? "unknown error" : t.getMessage();
   }
 
   protected String readSuperClassCannonicalName(final TypeMirror superClass)

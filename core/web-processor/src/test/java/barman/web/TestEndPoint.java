@@ -26,11 +26,18 @@ package barman.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestEndPoint extends EndPointServlet
+public class TestEndPoint
+    extends EndPointServlet
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(TestEndPoint.class);
 
-  @Override protected HasUserRole getCurrentUser() { return null; }
+  @Override protected HasUserRole getCurrentUser()
+  {
+    return null;
+  }
 
-  @Override protected final Logger logger() {return LOGGER;}
+  @Override protected final Logger logger()
+  {
+    return LOGGER;
+  }
 }

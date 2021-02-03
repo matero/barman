@@ -43,8 +43,7 @@ class EndPointSpec
   final String path;
   final boolean noLoggerDefined;
 
-  @SuppressWarnings("checkstyle:parameterNumber")
-  EndPointSpec(
+  @SuppressWarnings("checkstyle:parameterNumber") EndPointSpec(
       final String path,
       final List<Route> routes,
       final Map<HttpVerb, List<Route>> routesByVerb,
@@ -69,16 +68,6 @@ class EndPointSpec
     return ClassName.get(RouterServlet.class);
   }
 
-  boolean hasRoleConstraints()
-  {
-    return routes.stream().anyMatch(Route::hasRoleConstrains);
-  }
-
-  ClassName routerClassName()
-  {
-    return ClassName.bestGuess(routerClass);
-  }
-
   static Builder builder(
       final ClassName endpointClass,
       final String today)
@@ -88,6 +77,16 @@ class EndPointSpec
         new StringBuilder(),
         today,
         endpointClass);
+  }
+
+  boolean hasRoleConstraints()
+  {
+    return routes.stream().anyMatch(Route::hasRoleConstrains);
+  }
+
+  ClassName routerClassName()
+  {
+    return ClassName.bestGuess(routerClass);
   }
 
   static class Builder

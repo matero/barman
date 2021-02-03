@@ -34,17 +34,17 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 public @interface PUT
 {
   /**
-   Configures the path to the action.
-   <p>
-   If it starts with {@code '/'} then its considered absolute, an it does not consider if its a template action, nor the relative path of the endpoint
-   or anything else, is used 'as is'.
-   <p>
-   it is undefined (or if its using its default value {@code ""}) then it use the name of the method annotated, unless it's named {@code save()} n use
-   the complete path of the endpoint: e>
-   <ul>
-   <li>(<router_path>/(<application>|<administration>)/<controller_path>}), with
-
-   @return path to the action.
+   * Configures the path to the action.
+   * <p>
+   * If it starts with {@code '/'} then its considered absolute, an it does not consider if its a template action, nor the relative path of the
+   * endpoint or anything else, is used 'as is'.
+   * <p>
+   * is undefined (or if its using its default value {@code ""}) then it use the name of the method annotated, unless it's named {@code save()} n use
+   * complete path of the endpoint: e>
+   * <ul>
+   * <li>(<router_path>/(<application>|<administration>)/<controller_path>}), with
+   *
+   * @return path to the action.
    */
   String value() default "";
 }

@@ -45,11 +45,11 @@ public abstract class RouterServlet
   }
 
   /**
-   Creates an static (fixed) path representation.
-
-   @param uri  Complete URI of the represented path.
-   @param path sub-path of the URI diferentiating this path from the others in the same endpoint.
-   @return an {@link StaticPath} representing the {@code uri} and {@code path}.
+   * Creates an static (fixed) path representation.
+   *
+   * @param uri  Complete URI of the represented path.
+   * @param path sub-path of the URI diferentiating this path from the others in the same endpoint.
+   * @return an {@link StaticPath} representing the {@code uri} and {@code path}.
    */
   protected static Path path(
       final String uri,
@@ -67,8 +67,13 @@ public abstract class RouterServlet
     return new ParameterizedPath(uri, pattern, regex, parameters);
   }
 
+  protected static void notAuthorized(final HttpServletResponse response)
+  {
+    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+  }
+
   /**
-   @return the logger to be used at the controller.
+   * @return the logger to be used at the controller.
    */
   protected abstract Logger logger();
 
@@ -126,11 +131,6 @@ public abstract class RouterServlet
       throws ServletException, IOException
   {
     super.doTrace(request, response);
-  }
-
-  protected static void notAuthorized(final HttpServletResponse response)
-  {
-    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 
   private enum IndexPath

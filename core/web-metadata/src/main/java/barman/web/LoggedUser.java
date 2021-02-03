@@ -31,9 +31,9 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
- Indicates if a endpoint or an action requires an authenticated user accomplishing a rol.
- <p>
- An empty array means 'no role'.
+ * Indicates if a endpoint or an action requires an authenticated user accomplishing a rol.
+ * <p>
+ * An empty array means 'no role'.
  */
 @Retention(SOURCE)
 @Target({METHOD, TYPE})
@@ -41,10 +41,11 @@ public @interface LoggedUser
 {
   /** @return the allowed roles names. */
   String[] allowedRoles() default {};
-  /**
-   When is equal to {@code "*"}, then is required that no user is logged.
 
-   @return the rejected roles names.
+  /**
+   * When is equal to {@code "*"}, then is required that no user is logged.
+   *
+   * @return the rejected roles names.
    */
   String[] rejectedRoles() default {};
 }

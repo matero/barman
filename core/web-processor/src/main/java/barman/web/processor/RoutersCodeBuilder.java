@@ -47,6 +47,112 @@ class RoutersCodeBuilder
   private static final ClassName LOGGER_CLASS = ClassName.get(Logger.class);
   private static final ClassName LOGGER_FACTORY_CLASS = ClassName.get(LoggerFactory.class);
 
+  static MethodSpec overrideVerbHandlerOnDevelopmentEnvironment(final HttpVerb httpVerb)
+  {
+    final MethodSpec.Builder httpVerbHandler = MethodSpec
+                                                   .methodBuilder(httpVerb.handler)
+                                                   .addAnnotation(Override.class)
+                                                   .addModifiers(Modifier.PUBLIC)
+                                                   .addParameter(HttpServletRequest.class, "request", Modifier.FINAL)
+                                                   .addParameter(HttpServletResponse.class, "response", Modifier.FINAL)
+                                                   .addException(ServletException.class)
+                                                   .addException(IOException.class);
+    httpVerbHandler.addStatement("response.setHeader(\"Access-Control-Allow-Origin\", \"*\")");
+    httpVerbHandler.addStatement("super.$L(request, response)", httpVerb.handler);
+    return httpVerbHandler.build();
+  }
+
+  private static boolean doAllRoutesRequireUserLogged(final List<Route> routes)
+  {
+    for (final Route r : routes) {
+      if (!r.requiresUserLogged) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static boolean doAllRoutesRequireUserNotLogged(final List<Route> routes)
+  {
+    for (final Route r : routes) {
+      if (!r.requiresUserNotLogged) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static boolean doAllRoutesHasSameAllowedRoles(final List<Route> routes)
+  {
+    if (routes.size() < 2) {
+      return true;
+    }
+
+    final var roles = routes.get(0).allowedRoles;
+    for (int i = 1; i < routes.size(); i++) {
+      if (!Arrays.equals(roles, routes.get(i).allowedRoles)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static boolean doAllRoutesHasSameRejectedRoles(final List<Route> routes)
+  {
+    if (routes.size() < 2) {
+      return true;
+    }
+
+    final var roles = routes.get(0).rejectedRoles;
+    for (int i = 1; i < routes.size(); i++) {
+      if (!Arrays.equals(roles, routes.get(i).rejectedRoles)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static void addUserLoggedValidation(final MethodSpec.Builder httpVerbHandler)
+  {
+    httpVerbHandler.beginControlFlow("if (!userLogged())")
+                   .addStatement("notAuthorized(response)")
+                   .addStatement("return")
+                   .endControlFlow();
+  }
+
+  private static void addUserNotLoggedValidation(final MethodSpec.Builder control)
+  {
+    control.beginControlFlow("if (userLogged())")
+           .addStatement("notAuthorized(response)")
+           .addStatement("return")
+           .endControlFlow();
+  }
+
+  private static void addAllowedRolesValidation(
+      final MethodSpec.Builder control,
+      final Route route)
+  {
+    if (route.hasOneAllowedRole()) {
+      final var role = route.allowedRole();
+      if (!"*".equals(role)) {
+        control.beginControlFlow("if (!$S.equals(getCurrentUser().role()))", role)
+               .addStatement("notAuthorized(response)")
+               .addStatement("return")
+               .endControlFlow();
+      }
+    } else if (route.hasManyAllowedRole()) {
+      control.beginControlFlow("switch (getCurrentUser().role())");
+      for (final var allowedRole : route.allowedRoles) {
+        control.addCode("case $S:\n", allowedRole);
+      }
+      control.addStatement("break");
+      control.addCode("default:\n")
+             .addStatement("notAuthorized(response)")
+             .addStatement("return")
+             .endControlFlow();
+    }
+  }
+
   JavaFile buildJavaCode(
       final EndPointSpec declarations,
       final boolean isDevelopmentEnvironment)
@@ -120,21 +226,6 @@ class RoutersCodeBuilder
     }
   }
 
-  static MethodSpec overrideVerbHandlerOnDevelopmentEnvironment(final HttpVerb httpVerb)
-  {
-    final MethodSpec.Builder httpVerbHandler = MethodSpec
-                                                   .methodBuilder(httpVerb.handler)
-                                                   .addAnnotation(Override.class)
-                                                   .addModifiers(Modifier.PUBLIC)
-                                                   .addParameter(HttpServletRequest.class, "request", Modifier.FINAL)
-                                                   .addParameter(HttpServletResponse.class, "response", Modifier.FINAL)
-                                                   .addException(ServletException.class)
-                                                   .addException(IOException.class);
-    httpVerbHandler.addStatement("response.setHeader(\"Access-Control-Allow-Origin\", \"*\")");
-    httpVerbHandler.addStatement("super.$L(request, response)", httpVerb.handler);
-    return httpVerbHandler.build();
-  }
-
   MethodSpec overrideVerbHandler(
       final HttpVerb httpVerb,
       final List<Route> routes,
@@ -177,56 +268,6 @@ class RoutersCodeBuilder
     return httpVerbHandler.build();
   }
 
-  private static boolean doAllRoutesRequireUserLogged(final List<Route> routes)
-  {
-    for (final Route r : routes) {
-      if (!r.requiresUserLogged) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private static boolean doAllRoutesRequireUserNotLogged(final List<Route> routes)
-  {
-    for (final Route r : routes) {
-      if (!r.requiresUserNotLogged) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private static boolean doAllRoutesHasSameAllowedRoles(final List<Route> routes)
-  {
-    if (routes.size() < 2) {
-      return true;
-    }
-
-    final var roles = routes.get(0).allowedRoles;
-    for (int i = 1; i < routes.size(); i++) {
-      if (!Arrays.equals(roles, routes.get(i).allowedRoles)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private static boolean doAllRoutesHasSameRejectedRoles(final List<Route> routes)
-  {
-    if (routes.size() < 2) {
-      return true;
-    }
-
-    final var roles = routes.get(0).rejectedRoles;
-    for (int i = 1; i < routes.size(); i++) {
-      if (!Arrays.equals(roles, routes.get(i).rejectedRoles)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   void addHandle(
       final MethodSpec.Builder control,
       final Route route,
@@ -249,47 +290,6 @@ class RoutersCodeBuilder
     }
     control.addStatement("$L(request, response)", route.handler);
     control.addStatement("return");
-  }
-
-  private static void addUserLoggedValidation(final MethodSpec.Builder httpVerbHandler)
-  {
-    httpVerbHandler.beginControlFlow("if (!userLogged())")
-                   .addStatement("notAuthorized(response)")
-                   .addStatement("return")
-                   .endControlFlow();
-  }
-
-  private static void addUserNotLoggedValidation(final MethodSpec.Builder control)
-  {
-    control.beginControlFlow("if (userLogged())")
-           .addStatement("notAuthorized(response)")
-           .addStatement("return")
-           .endControlFlow();
-  }
-
-  private static void addAllowedRolesValidation(
-      final MethodSpec.Builder control,
-      final Route route)
-  {
-    if (route.hasOneAllowedRole()) {
-      final var role = route.allowedRole();
-      if (!"*".equals(role)) {
-        control.beginControlFlow("if (!$S.equals(getCurrentUser().role()))", role)
-               .addStatement("notAuthorized(response)")
-               .addStatement("return")
-               .endControlFlow();
-      }
-    } else if (route.hasManyAllowedRole()) {
-      control.beginControlFlow("switch (getCurrentUser().role())");
-      for (final var allowedRole : route.allowedRoles) {
-        control.addCode("case $S:\n", allowedRole);
-      }
-      control.addStatement("break");
-      control.addCode("default:\n")
-             .addStatement("notAuthorized(response)")
-             .addStatement("return")
-             .endControlFlow();
-    }
   }
 
   private void addRejectedRolesValidation(

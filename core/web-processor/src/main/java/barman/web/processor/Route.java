@@ -34,14 +34,13 @@ import java.util.regex.Pattern;
 
 final class Route
 {
+  public static final int BASIC_PARAMETERS_COUNT = 4;
+  public static final int HASH_PRIME = 17;
   private static final ClassName PATTERN_CLASS_NAME = ClassName.get(Pattern.class);
   private static final String NO_REGEX = "";
   private static final String[] NO_PARAMETERS = {};
-  private static final String[] OF_PARAMS = NO_PARAMETERS;
   static final String[] NO_ROLES = NO_PARAMETERS;
-  public static final int BASIC_PARAMETERS_COUNT = 4;
-  public static final int HASH_PRIME = 17;
-
+  private static final String[] OF_PARAMS = NO_PARAMETERS;
   final HttpVerb verb;
   final String path;
   final String pattern;

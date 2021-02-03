@@ -52,8 +52,33 @@ class RoutesReader
     this.routes = routes;
   }
 
+  private static String handlerPath(
+      final ExecutableElement method,
+      final String path)
+  {
+    if ("".equals(path)) {
+      final String actionName = method.getSimpleName().toString();
+      switch (actionName) {
+      case "index":
+      case "save":
+      case "update":
+      case "delete":
+        return "";
+      default:
+        return '/' + actionName;
+      }
+    } else {
+      return path.startsWith("/") ? path : '/' + path;
+    }
+  }
+
+  private static String getPath(final TypeElement endpoint)
+  {
+    return endpoint.getAnnotation(Endpoint.class).value();
+  }
+
   /**
-   @return null if no processing done (reports errors on such case), the route add
+   * @return null if no processing done (reports errors on such case), the route add
    */
   boolean buildRoutesFor(final TypeElement endpoint)
   {
@@ -150,26 +175,6 @@ class RoutesReader
     }
   }
 
-  private static String handlerPath(
-      final ExecutableElement method,
-      final String path)
-  {
-    if ("".equals(path)) {
-      final String actionName = method.getSimpleName().toString();
-      switch (actionName) {
-      case "index":
-      case "save":
-      case "update":
-      case "delete":
-        return "";
-      default:
-        return '/' + actionName;
-      }
-    } else {
-      return path.startsWith("/") ? path : '/' + path;
-    }
-  }
-
   private String makeEndpointPath(
       final String parentPath,
       final TypeElement endpoint)
@@ -189,10 +194,5 @@ class RoutesReader
       }
     }
     return "";
-  }
-
-  private static String getPath(final TypeElement endpoint)
-  {
-    return endpoint.getAnnotation(Endpoint.class).value();
   }
 }

@@ -34,21 +34,54 @@ import barman.web.TestEndPoint;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@Endpoint @LoggedUser(allowedRoles = {"user", "configurator"}) class Tasks extends TestEndPoint
+@Endpoint @LoggedUser(allowedRoles = {"user", "configurator"}) class Tasks
+    extends TestEndPoint
 {
-  @GET void index(final HttpServletRequest request, final HttpServletResponse response) {}
+  @GET void index(
+      final HttpServletRequest request,
+      final HttpServletResponse response)
+  {
+  }
 
-  @GET("/{id}") void get(final HttpServletRequest request, final HttpServletResponse response) {}
+  @GET("/{id}") void get(
+      final HttpServletRequest request,
+      final HttpServletResponse response)
+  {
+  }
 
-  @GET void author(final HttpServletRequest request, final HttpServletResponse response) {}
+  @GET void author(
+      final HttpServletRequest request,
+      final HttpServletResponse response)
+  {
+  }
 
-  @POST void save(final HttpServletRequest request, final HttpServletResponse response) {}
+  @POST void save(
+      final HttpServletRequest request,
+      final HttpServletResponse response)
+  {
+  }
 
-  @PUT("/{id}") void update(final HttpServletRequest request, final HttpServletResponse response) {}
+  @PUT("/{id}") void update(
+      final HttpServletRequest request,
+      final HttpServletResponse response)
+  {
+  }
 
-  @DELETE("/{id}") void delete(final HttpServletRequest request, final HttpServletResponse response) {}
+  @DELETE("/{id}") void delete(
+      final HttpServletRequest request,
+      final HttpServletResponse response)
+  {
+  }
 
-  @POST @LoggedUser(rejectedRoles = "*") void login(final HttpServletRequest request, final HttpServletResponse response) {}
+  @POST @LoggedUser(rejectedRoles = "*") void login(
+      final HttpServletRequest request,
+      final HttpServletResponse response)
+  {
+  }
 
-  @POST @LoggedUser(allowedRoles = "*") void logout(final HttpServletRequest request, final HttpServletResponse response) {}
+  @POST @LoggedUser(allowedRoles = "*") void logout(
+      final HttpServletRequest request,
+      final HttpServletResponse response)
+  {
+  }
 }

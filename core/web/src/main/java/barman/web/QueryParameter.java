@@ -27,17 +27,18 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.function.Supplier;
 
 /**
- Values to be read from query parmeters hold at request.
-
- @param <T> Type of the query parameter after interpretation. */
+ * Values to be read from query parmeters hold at request.
+ *
+ * @param <T> Type of the query parameter after interpretation.
+ */
 public abstract class QueryParameter<T>
     extends RequestValueReader<T>
 {
   /**
-   Construct a {@link QueryParameter} instance
-
-   @param name        the name of the represented parameter.
-   @param interpreter how should the raw value of the query parameter be interpreted as an instance of {@code T}?
+   * Construct a {@link QueryParameter} instance
+   *
+   * @param name        the name of the represented parameter.
+   * @param interpreter how should the raw value of the query parameter be interpreted as an instance of {@code T}?
    */
   private QueryParameter(
       final String name,
@@ -47,8 +48,8 @@ public abstract class QueryParameter<T>
   }
 
   /**
-   @param request {@link HttpServletRequest} where to check if the value is defined or not.
-   @return if the {@code request} parameters map holds this query parameter's name.
+   * @param request {@link HttpServletRequest} where to check if the value is defined or not.
+   * @return if the {@code request} parameters map holds this query parameter's name.
    */
   @Override public final boolean isDefinedAt(final HttpServletRequest request)
   {
@@ -61,20 +62,20 @@ public abstract class QueryParameter<T>
   }
 
   /**
-   Required query parameters.
-   <p>
-   When they are undefined under a request, the query parameter read fails and throws an exception.
-
-   @param <T> Type of the represented query parameter.
+   * Required query parameters.
+   * <p>
+   * When they are undefined under a request, the query parameter read fails and throws an exception.
+   *
+   * @param <T> Type of the represented query parameter.
    */
   public static final class Required<T>
       extends QueryParameter<T>
   {
     /**
-     Construct a {@link QueryParameter} instance.
-
-     @param name        the name of the represented parameter.
-     @param interpreter how should the raw value of the query parameter be interpreted as an instance of {@code T}?
+     * Construct a {@link QueryParameter} instance.
+     *
+     * @param name        the name of the represented parameter.
+     * @param interpreter how should the raw value of the query parameter be interpreted as an instance of {@code T}?
      */
     Required(
         final String name,
@@ -84,9 +85,9 @@ public abstract class QueryParameter<T>
     }
 
     /**
-     @param request the {@link HttpServletRequest} which doesn't have this parameter definition.
-     @return nothing, it never returns, it always throws an instance of {@link ValueNotDefined}.
-     @throws ValueNotDefined with this parameter's name and the request which doesn't hold this parameter definition; ALWAYS!
+     * @param request the {@link HttpServletRequest} which doesn't have this parameter definition.
+     * @return nothing, it never returns, it always throws an instance of {@link ValueNotDefined}.
+     * @throws ValueNotDefined with this parameter's name and the request which doesn't hold this parameter definition; ALWAYS!
      */
     @Override protected T valueUndefined(final HttpServletRequest request)
     {
@@ -95,11 +96,11 @@ public abstract class QueryParameter<T>
   }
 
   /**
-   Not required query parameters.
-   <p>
-   When they are undefined under a request, the query parameter is interpreted as defined by its default value.
-
-   @param <T> Type of the represented query parameter.
+   * Not required query parameters.
+   * <p>
+   * When they are undefined under a request, the query parameter is interpreted as defined by its default value.
+   *
+   * @param <T> Type of the represented query parameter.
    */
   public static final class NotRequiredWithConstantDefaultValue<T>
       extends QueryParameter<T>
@@ -109,11 +110,11 @@ public abstract class QueryParameter<T>
     private final T defaultValue;
 
     /**
-     Construct a {@link QueryParameter.NotRequiredWithConstantDefaultValue} instance
-
-     @param name         the name of the represented parameter.
-     @param interpreter  how should the raw value of the query parameter be interpreted as an instance of {@code T}?
-     @param defaultValue value to use when the query parameter is undefined under an {@link HttpServletRequest}.
+     * Construct a {@link QueryParameter.NotRequiredWithConstantDefaultValue} instance
+     *
+     * @param name         the name of the represented parameter.
+     * @param interpreter  how should the raw value of the query parameter be interpreted as an instance of {@code T}?
+     * @param defaultValue value to use when the query parameter is undefined under an {@link HttpServletRequest}.
      */
     NotRequiredWithConstantDefaultValue(
         final String name,
@@ -132,11 +133,11 @@ public abstract class QueryParameter<T>
   }
 
   /**
-   Not required query parameters.
-   <p>
-   When they are undefined under a request, the query parameter is interpreted as defined by its default value supplier.
-
-   @param <T> Type of the represented query parameter.
+   * Not required query parameters.
+   * <p>
+   * When they are undefined under a request, the query parameter is interpreted as defined by its default value supplier.
+   *
+   * @param <T> Type of the represented query parameter.
    */
   public static final class NotRequiredWithSuppliedDefaultValue<T>
       extends QueryParameter<T>
@@ -146,11 +147,11 @@ public abstract class QueryParameter<T>
     private final Supplier<T> defaultValue;
 
     /**
-     Construct a {@link NotRequiredWithSuppliedDefaultValue} instance
-
-     @param name         the name of the represented parameter.
-     @param interpreter  how should the raw value of the query parameter be interpreted as an instance of {@code T}?
-     @param defaultValue value supplier to use when the query parameter is undefined under an {@link HttpServletRequest}.
+     * Construct a {@link NotRequiredWithSuppliedDefaultValue} instance
+     *
+     * @param name         the name of the represented parameter.
+     * @param interpreter  how should the raw value of the query parameter be interpreted as an instance of {@code T}?
+     * @param defaultValue value supplier to use when the query parameter is undefined under an {@link HttpServletRequest}.
      */
     NotRequiredWithSuppliedDefaultValue(
         final String name,

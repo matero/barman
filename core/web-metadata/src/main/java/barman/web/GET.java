@@ -30,9 +30,9 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
- Denotes an action method mapping to a GET request.
- <p>
- If it starts with {@code '/'} then the path is taken literally, avoiding to precalculate any part of the path.
+ * Denotes an action method mapping to a GET request.
+ * <p>
+ * If it starts with {@code '/'} then the path is taken literally, avoiding to precalculate any part of the path.
  */
 @Retention(SOURCE)
 @Target(METHOD)
