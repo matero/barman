@@ -162,7 +162,7 @@ class RoutersCodeBuilder
                                .superclass(declarations.superClass)
                                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                                .addAnnotation(AnnotationSpec.builder(Generated.class)
-                                                            .addMember("value", "$S", "barman/web-processor")
+                                                            .addMember("value", "$S", "barman/EndpointsCompiler")
                                                             .addMember("comments", "$S", declarations.paths)
                                                             .addMember("date", "$S", declarations.date)
                                                             .build())

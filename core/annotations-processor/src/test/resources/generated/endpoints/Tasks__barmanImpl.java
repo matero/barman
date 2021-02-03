@@ -24,17 +24,16 @@ THE SOFTWARE.
 package test;
 
 import barman.web.RouterServlet;
-
+import java.io.IOException;
+import java.util.regex.Pattern;
 import javax.annotation.processing.Generated;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.regex.Pattern;
 
 @Generated(
-    value = "barman/web-processor",
+    value = "barman/EndpointsCompiler",
     comments = "",
     date = "2017-02-23"
 )
