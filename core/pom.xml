@@ -278,6 +278,6 @@ THE SOFTWARE.
         <module>sql</module>
         <module>web-metadata</module>
         <module>web</module>
-        <module>web-processor</module>
+        <module>annotations-processor</module>
     </modules>
 </project>
